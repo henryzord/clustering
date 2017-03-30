@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/henry/Projects/clustering/cmake-build-debug
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/home/henry/clion-2016.3.5/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/home/henry/clion-2016.3.5/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named clustering1
+# Target rules for targets named clustering
 
 # Build rule for target.
-clustering1: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 clustering1
-.PHONY : clustering1
+clustering: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 clustering
+.PHONY : clustering
 
 # fast build rule for target.
-clustering1/fast:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/build
-.PHONY : clustering1/fast
+clustering/fast:
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/build
+.PHONY : clustering/fast
 
 main.o: main.c.o
 
@@ -129,7 +129,7 @@ main.o: main.c.o
 
 # target to build an object file
 main.c.o:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/main.c.o
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/main.c.o
 .PHONY : main.c.o
 
 main.i: main.c.i
@@ -138,7 +138,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/main.c.i
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -147,7 +147,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/main.c.s
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/main.c.s
 .PHONY : main.c.s
 
 # Help Target
@@ -156,9 +156,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... clustering1"
+	@echo "... rebuild_cache"
+	@echo "... clustering"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

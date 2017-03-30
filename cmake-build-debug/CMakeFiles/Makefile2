@@ -60,39 +60,39 @@ CMAKE_SOURCE_DIR = /home/henry/Projects/clustering
 CMAKE_BINARY_DIR = /home/henry/Projects/clustering/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/clustering1.dir
+# Target rules for target CMakeFiles/clustering.dir
 
 # All Build rule for target.
-CMakeFiles/clustering1.dir/all:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/depend
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/henry/Projects/clustering/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target clustering1"
-.PHONY : CMakeFiles/clustering1.dir/all
+CMakeFiles/clustering.dir/all:
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/depend
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/henry/Projects/clustering/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target clustering"
+.PHONY : CMakeFiles/clustering.dir/all
 
 # Include target in all.
-all: CMakeFiles/clustering1.dir/all
+all: CMakeFiles/clustering.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/clustering1.dir/rule: cmake_check_build_system
+CMakeFiles/clustering.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/henry/Projects/clustering/cmake-build-debug/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/clustering1.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/clustering.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/henry/Projects/clustering/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/clustering1.dir/rule
+.PHONY : CMakeFiles/clustering.dir/rule
 
 # Convenience name for target.
-clustering1: CMakeFiles/clustering1.dir/rule
+clustering: CMakeFiles/clustering.dir/rule
 
-.PHONY : clustering1
-
-# clean rule for target.
-CMakeFiles/clustering1.dir/clean:
-	$(MAKE) -f CMakeFiles/clustering1.dir/build.make CMakeFiles/clustering1.dir/clean
-.PHONY : CMakeFiles/clustering1.dir/clean
+.PHONY : clustering
 
 # clean rule for target.
-clean: CMakeFiles/clustering1.dir/clean
+CMakeFiles/clustering.dir/clean:
+	$(MAKE) -f CMakeFiles/clustering.dir/build.make CMakeFiles/clustering.dir/clean
+.PHONY : CMakeFiles/clustering.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/clustering.dir/clean
 
 .PHONY : clean
 

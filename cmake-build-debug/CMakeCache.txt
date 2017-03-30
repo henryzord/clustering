@@ -121,7 +121,7 @@ CMAKE_OBJCOPY:FILEPATH=/usr/bin/objcopy
 CMAKE_OBJDUMP:FILEPATH=/usr/bin/objdump
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=clustering1
+CMAKE_PROJECT_NAME:STATIC=clustering
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -183,6 +183,12 @@ clustering1_BINARY_DIR:STATIC=/home/henry/Projects/clustering/cmake-build-debug
 
 //Value Computed by CMake
 clustering1_SOURCE_DIR:STATIC=/home/henry/Projects/clustering
+
+//Value Computed by CMake
+clustering_BINARY_DIR:STATIC=/home/henry/Projects/clustering/cmake-build-debug
+
+//Value Computed by CMake
+clustering_SOURCE_DIR:STATIC=/home/henry/Projects/clustering
 
 
 ########################
