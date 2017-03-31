@@ -6,6 +6,12 @@ __pycache__/
 # pycharm
 .idea/
 
+# development
+cmake-build-debug/
+
+# tmp files
+*.*~
+
 # C extensions
 *.so
 
