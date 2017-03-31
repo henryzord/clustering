@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
     dummy_partition[99] = 1;
     dummy_partition[149] = 1;
 
-    float val = sswc(dummy_partition, dataset);
+    float val = sswc(dummy_partition, dataset, n_lines, n_columns);
     printf("val: %f\n", val);
 
 //    printf("n_lines: %d n_columns: %d\n", n_lines, n_columns);

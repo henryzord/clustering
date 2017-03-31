@@ -1,1 +1,2 @@
-CMake: 3.6.3@/home/henry/clion-2016.3.5/bin/cmake/bin/cmake
+Options: 
+CMake: 3.7.1@/home/henryzord/clion-2016.3.5/bin/cmake/bin/cmake

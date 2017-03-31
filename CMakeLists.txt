@@ -3,5 +3,8 @@ project(clustering)
 
 set(CMAKE_C_STANDARD 11)
 
-set(SOURCE_FILES main.c)
+set(SOURCE_FILES src/main.c src/measures/sswc.h)
+
+link_directories(src/measures)
+
 add_executable(clustering ${SOURCE_FILES})
