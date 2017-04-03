@@ -6,18 +6,18 @@
 #include <stdlib.h>
 
 /**
- * Calculates the (unsquared) euclidean distance between two data objects.
- * @param a First object
- * @param b Second object
+ * Calculates the euclidean distance between two data objects.
+ * @param x1 First object
+ * @param x2 Second object
  * @param n_attributes Number of attributes for both objects
- * @return The (unsquared) euclidean distance
+ * @return The euclidean distance
  */
-float get_pow_euclidean_distance(float *a, float *b, int n_attributes) {
+float get_euclidean_distance(float *x1, float *x2, int n_attributes) {
     float distance = 0;
     for(int n = 0; n < n_attributes; n++) {
-        distance += pow(a[n] - b[n], (float)2);
+        distance += pow(x1[n] - x2[n], (float)2);
     }
-    return distance;
+    return (float)sqrt(distance);
 }
 
 float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
@@ -25,10 +25,10 @@ float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
 
     for(int i = 0; i < n_objects; i++) {
         for(int j = 0; j <= i; j++) {
-            float dist = get_pow_euclidean_distance(
+            float dist = get_euclidean_distance(
                     &dataset[i * n_attributes],
                     &dataset[j * n_attributes],
-                    n_attributes - 1
+                    n_attributes - 1  // minus the class attribute
             );
             matrix[i * n_objects + j] = dist;
             matrix[j * n_objects + i] = dist;
@@ -77,26 +77,67 @@ void print_int_array(int *array, int size) {
  * "Relative clustering validity criteria: A comparative overview."
  * Statistical Analysis and Data Mining 3.4 (2010): 209-235.
  */
+//float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
+//    float *dm = get_distance_matrix(dataset, n_objects, n_attributes);
+//    int *partition = get_partition(medoids, dm, dataset, n_objects, n_attributes);
+//
+//    float index = 0;
+//    for(int i = 0; i < n_objects; i++) {
+//        float a = dm[i * n_objects + partition[i]];
+//        float b = INFINITY;
+//
+//        for(int j = 0; j < n_objects; j++) {
+//            // is a medoid, is not the prototype for the cluster this object belongs to, and is closer to this object
+//            //
+//            if((medoids[j] == 1) && (j != partition[i]) && (dm[i * n_objects + j] < b)) {
+//                b = dm[i * n_objects + j] < b;
+//            }
+//        }
+//        index += (b - a) / fmaxf(a, b);
+//    }
+//
+//    return index / (float)n_objects;
+//}
+
+/**
+ * Second implementation of the sswc.
+ * @param medoids
+ * @param dataset
+ * @param n_objects
+ * @param n_attributes
+ * @return
+ */
 float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
-    float *dm = get_distance_matrix(dataset, n_objects, n_attributes);
-    int *partition = get_partition(medoids, dm, dataset, n_objects, n_attributes);
+    float dist, index = 0, a, b;
 
-    float index = 0;
     for(int i = 0; i < n_objects; i++) {
-        float a = dm[i * n_objects + partition[i]];
-        float b = INFINITY;
-
+        a = INFINITY, b = INFINITY;
         for(int j = 0; j < n_objects; j++) {
-            // is a medoid, is not the prototype for the cluster this object belongs to, and is closer to this object
-            //
-            if((medoids[j] == 1) && (j != partition[i]) && (dm[i * n_objects + j] < b)) {
-                b = dm[i * n_objects + j] < b;
+            if(medoids[j] == 0) {
+                continue;
+            } else {
+                if(i == 99) {
+                    int z = 0;
+                }
+
+                dist = get_euclidean_distance(
+                        &dataset[i * n_attributes],
+                        &dataset[j * n_attributes],
+                        n_attributes - 1
+                );
+                if(dist < a) {
+                    b = a;
+                    a = dist;
+                }
+                else if (dist < b) {
+                    b = dist;
+                }
             }
         }
-        index += (b - a) / fmaxf(a, b);
+        printf("a: %f b: %f\n", a, b);
+        index += (b - a) / fmaxf(b, a);
     }
-
-    return index / (float)n_objects;
+    return index / n_objects;
 }
 
 float *to_matrix(char *path, int *n_lines, int *n_columns) {
@@ -162,17 +203,13 @@ float *to_matrix(char *path, int *n_lines, int *n_columns) {
 void print_matrix(float *matrix, int n_lines, int n_columns) {
     int n = 0;
     while(n < n_lines * n_columns) {
-        printf("%.2f\t", matrix[n]);
+        printf("%.8f\t\t", matrix[n]);
         n += 1;
         if ((n % n_columns == 0) && (n > 0)) {
             printf("\n");
         }
     }
 }
-
-//void free_array(int *matrix, int size) {
-//
-//}
 
 
 /**
@@ -205,7 +242,6 @@ int main(int argc, char **argv) {
     float val = sswc(dummy_partition, dataset, n_lines, n_columns);
     printf("sswc: %f\n", val);
 
-//    printf("n_lines: %d n_columns: %d\n", n_lines, n_columns);
     free(dataset);
     return 0;
 }
