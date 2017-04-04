@@ -34,7 +34,6 @@ float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
             matrix[j * n_objects + i] = dist;
         }
     }
-
     return matrix;
 }
 
@@ -65,47 +64,18 @@ void print_int_array(int *array, int size) {
     printf("\n");
 }
 
-
 /**
- * Calculates the Simplified Silhouette Width Criterion of a partition:
- *
- * 1/N * \sum_{i=1}^{N} \frac{b(i) - a(i)}{\max{b(i), a(i)}}
- *
- * For more information on this metric, see
- *
- * Vendramin, Lucas, Ricardo JGB Campello, and Eduardo R. Hruschka.
+ * Calculates the Simplified Silhouette Width Criterion of a partition: <br><br>
+ * <img src="file:/home/henryzord/Projects/clustering/docs/img/sswc.png" border="0" /> <br>
+ * For more information about this metric, see <br><br>
+ * <q>Vendramin, Lucas, Ricardo JGB Campello, and Eduardo R. Hruschka.
  * "Relative clustering validity criteria: A comparative overview."
- * Statistical Analysis and Data Mining 3.4 (2010): 209-235.
- */
-//float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
-//    float *dm = get_distance_matrix(dataset, n_objects, n_attributes);
-//    int *partition = get_partition(medoids, dm, dataset, n_objects, n_attributes);
-//
-//    float index = 0;
-//    for(int i = 0; i < n_objects; i++) {
-//        float a = dm[i * n_objects + partition[i]];
-//        float b = INFINITY;
-//
-//        for(int j = 0; j < n_objects; j++) {
-//            // is a medoid, is not the prototype for the cluster this object belongs to, and is closer to this object
-//            //
-//            if((medoids[j] == 1) && (j != partition[i]) && (dm[i * n_objects + j] < b)) {
-//                b = dm[i * n_objects + j] < b;
-//            }
-//        }
-//        index += (b - a) / fmaxf(a, b);
-//    }
-//
-//    return index / (float)n_objects;
-//}
-
-/**
- * Second implementation of the sswc.
- * @param medoids
- * @param dataset
- * @param n_objects
- * @param n_attributes
- * @return
+ * Statistical Analysis and Data Mining 3.4 (2010): 209-235.</q>
+ * @param medoids A truth array where zeros denote default objects and ones the medoids.
+ * @param dataset A pointer to the first position of the dataset.
+ * @param n_objects Number of objects.
+ * @param n_attributes Number of attributes.
+ * @return The Simplified Silhouette Width Criterion.
  */
 float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
     int n_medoids = 0;
@@ -138,7 +108,7 @@ float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
                 }
             }
         }
-        printf("a: %f b: %f\n", a, b);
+        // TODO and when two medoids share the same coordinates?
         index += (b - a) / ((b - a > 0)*fmaxf(b, a) + (b - a <= 0)*1);
     }
     return index / n_objects;

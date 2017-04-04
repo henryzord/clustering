@@ -3,7 +3,7 @@ project(clustering)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm -std=c11")
 
-set(SOURCE_FILES src/main.c)
+set(SOURCE_FILES src/main.c src/utils.h src/measures.h)
 
 add_executable(clustering ${SOURCE_FILES})
 
