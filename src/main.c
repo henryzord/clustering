@@ -108,6 +108,14 @@ void print_int_array(int *array, int size) {
  * @return
  */
 float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
+    int n_medoids = 0;
+    for(int j = 0; j < n_objects; j++) {
+        n_medoids += medoids[j];
+    }
+    if(n_medoids <= 1) {
+        return -1;  // the index for the trivial partition
+    }
+
     float dist, index = 0, a, b;
 
     for(int i = 0; i < n_objects; i++) {
@@ -131,7 +139,7 @@ float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
             }
         }
         printf("a: %f b: %f\n", a, b);
-        index += (b - a) / fmaxf(b, a);
+        index += (b - a) / ((b - a > 0)*fmaxf(b, a) + (b - a <= 0)*1);
     }
     return index / n_objects;
 }
