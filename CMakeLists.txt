@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(clustering)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm -std=c11")
 
 set(SOURCE_FILES src/main.c)
 

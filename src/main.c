@@ -116,10 +116,6 @@ float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
             if(medoids[j] == 0) {
                 continue;
             } else {
-                if(i == 99) {
-                    int z = 0;
-                }
-
                 dist = get_euclidean_distance(
                         &dataset[i * n_attributes],
                         &dataset[j * n_attributes],
@@ -140,7 +136,7 @@ float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
     return index / n_objects;
 }
 
-float *to_matrix(char *path, int *n_lines, int *n_columns) {
+float *read_dataset(char *path, int *n_lines, int *n_columns) {
     FILE *file = fopen(path, "r");  // TODO change in the future!
 
     char c, str[65536];  // maximum size of line. it's pretty big!
@@ -178,8 +174,9 @@ float *to_matrix(char *path, int *n_lines, int *n_columns) {
     matrix = (float*)malloc(sizeof(float) * *n_lines * *n_columns);
 
     if (file) {
-        while ((c = (char)getc(file)) != EOF) {
-            if(c == '\n') {
+        while (true) {
+            c = (char)getc(file);
+            if((c == '\n') || (c == EOF)) {
                 column_c = 0;
                 for (char *p = strtok(str, ","); p != NULL; p = strtok(NULL, ",")) {
                     float val = (float)atof(p);
@@ -188,6 +185,10 @@ float *to_matrix(char *path, int *n_lines, int *n_columns) {
                 }
                 str_counter = 0;
                 line_c += 1;
+
+                if(c == EOF) {
+                    break;
+                }
             } else {
                 str[str_counter] = c;
                 str_counter += 1;
@@ -230,16 +231,16 @@ int *randint(int size, int hmin, int hmax) {
 }
 
 int main(int argc, char **argv) {
-    int n_lines, n_columns;
+    int n_objects, n_attributes;
 
-    float *dataset = to_matrix("../datasets/iris.csv", &n_lines, &n_columns);
+    float *dataset = read_dataset("../datasets/iris.csv", &n_objects, &n_attributes);
 
-    int *dummy_partition = randint(n_lines, 0, 1);
-    dummy_partition[49] = 1;
-    dummy_partition[99] = 1;
-    dummy_partition[149] = 1;
+    int *medoids = randint(n_objects, 0, 1);
+    medoids[49] = 1;
+    medoids[99] = 1;
+    medoids[149] = 1;
 
-    float val = sswc(dummy_partition, dataset, n_lines, n_columns);
+    float val = sswc(medoids, dataset, n_objects, n_attributes);
     printf("sswc: %f\n", val);
 
     free(dataset);

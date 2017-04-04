@@ -15,10 +15,18 @@ def get_partition(medoids, dataset):
 
 
 def sswc(medoids, dataset):
-    n_objects, n_attributes = dataset.shape
+    """
+    Calculates the Simplified Silhouette Width Criterion
+    
+    :type medoids: numpy.ndarray
+    :param medoids: A true array where zeros denote default objects,
+        and ones the medoids.
+    :type dataset: pandas.DataFrame
+    :param dataset: Dataset WITHOUT the group/class attribute. 
+    :return: The Simplified Silhouette Width Criterion.
+    """
 
-    # TODO fix this later!
-    del dataset['class']
+    n_objects, n_attributes = dataset.shape
 
     medoid_index = np.flatnonzero(medoids)  # index of objects that are medoids
     medoids_sample = dataset.loc[medoid_index]  # values for attributes for medoid objects
@@ -48,8 +56,7 @@ def main():
     medoids = np.zeros(dataset.shape[0], dtype=np.int)
     medoids[[49, 99, 149]] = 1
 
-    # print 'REMOVE ME LATER!'
-    # print cdist(dataset, dataset, metric='euclidean')[:5, :5]
+    del dataset['class']
 
     index = sswc(medoids, dataset)
     print 'sswc: %f' % index
