@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "utils.h"
+#include "measures/commons.h"
 #include "measures/sswc.h"
+#include "measures/dbcv.h"
+
 
 /**
  * Allocates an array with size values between hmin (inclusive) and hmax (exclusive)
@@ -21,7 +25,7 @@ int *randint(int size, int hmin, int hmax) {
     return my_array;
 }
 
-int main(int argc, char **argv) {
+int calculate_sswc(int argc, char **argv) {
     int n_objects, n_attributes;
 
     float *dataset = read_dataset("../datasets/iris.csv", &n_objects, &n_attributes);
@@ -36,5 +40,28 @@ int main(int argc, char **argv) {
 
     free(medoids);
     free(dataset);
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    int n_objects, n_attributes;
+
+    float *dataset = read_dataset("../datasets/iris.csv", &n_objects, &n_attributes);
+
+
+    float *dm = get_distance_matrix(dataset, n_objects, n_attributes, true);
+    float *mst = prim_dat(dataset, n_objects, n_attributes);
+
+    srand((unsigned int)time(NULL));  // seeds whatever value it has currently
+    int *partition = randint(n_objects, 0, 2);
+
+    float *apts = a_pts_coredist(partition, dm, n_objects, n_attributes);
+
+//    print_matrix(mst, n_objects, MST_FIELDS, true);
+    free(dataset);
+    free(mst);
+    free(dm);
+    free(apts);
+
     return 0;
 }

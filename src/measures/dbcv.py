@@ -29,12 +29,12 @@ def prim_mst(objects, weight_matrix, shape):
         for w in objects:
             if w != v and not added[w]:
                 weight = weight_matrix[v, w]
-                if d[w] > weight:
+                if d[w] > weight:  # current neighbor is closer than the previous one
                     d[w] = weight
-                    parent[w] = v
-                if dist > d[w]:
-                    dist = d[w]
-                    next_v = w
+                    parent[w] = v  # the neighbor points to the current object
+                if dist > d[w]:  # current lighter edge is heavier than the one just found
+                    dist = d[w]  # sets the lighter edge to be the new one
+                    next_v = w  # next object to be evaluated is w
 
         degree[parent[next_v]] += 1
         degree[next_v] += 1

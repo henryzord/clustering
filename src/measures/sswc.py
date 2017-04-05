@@ -52,11 +52,9 @@ def sswc(medoids, dataset):
 
 def main():
     dataset_path = '../../datasets/iris.csv'
-    dataset = pd.read_csv(dataset_path, names=['sepal_width', 'sepal_height', 'petal_width', 'petal_height', 'class'], header=None)
+    dataset = pd.read_csv(dataset_path, names=['sepal_width', 'sepal_height', 'petal_width', 'petal_height'], header=None)
     medoids = np.zeros(dataset.shape[0], dtype=np.int)
     medoids[[49, 99, 149]] = 1
-
-    del dataset['class']
 
     index = sswc(medoids, dataset)
     print 'sswc: %f' % index

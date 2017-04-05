@@ -6,19 +6,33 @@
 #include <string.h>
 #include <stdbool.h>
 
-void print_array(int *array, int size) {
+void print_array_float(float *array, int size) {
+    for(int n = 0; n < size; n++) {
+        printf("%f\t", array[n]);
+    }
+    printf("\n");
+}
+
+void print_array_int(int *array, int size) {
     for(int n = 0; n < size; n++) {
         printf("%d\t", array[n]);
     }
     printf("\n");
 }
 
-void print_matrix(float *matrix, int n_lines, int n_columns) {
-    int n = 0;
+void print_matrix(float *matrix, int n_lines, int n_columns, bool show_index) {
+    int n = 0, line_c = 0;
+
     while(n < n_lines * n_columns) {
-        printf("%.8f\t\t", matrix[n]);
+        if((n % n_columns == 0) && show_index) {
+            printf("%05.d: ", line_c);
+        }
+
+        printf("%05.4f\t\t", matrix[n]);
+
         n += 1;
         if ((n % n_columns == 0) && (n > 0)) {
+            line_c += 1;
             printf("\n");
         }
     }

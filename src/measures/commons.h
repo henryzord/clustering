@@ -12,14 +12,15 @@
  * @param x1 First object
  * @param x2 Second object
  * @param n_attributes Number of predictive attributes for both objects
+ * @param squared Whether to return a squared euclidean distance
  * @return The euclidean distance
  */
-float get_euclidean_distance(float *x1, float *x2, int n_attributes) {
+float get_euclidean_distance(float *x1, float *x2, int n_attributes, bool squared) {
     float distance = 0;
     for(int n = 0; n < n_attributes; n++) {
         distance += pow(x1[n] - x2[n], (float)2);
     }
-    return (float)sqrt(distance);
+    return ((squared)*distance) + (!squared)*sqrtf(distance);
 }
 
 /**
@@ -27,10 +28,11 @@ float get_euclidean_distance(float *x1, float *x2, int n_attributes) {
 
  * @param dataset A pointer to the first element in the dataset
  * @param n_objects Number of objects within the dataset
- * @param n_attributes Total number of attributes (including class/group) in the dataset
+ * @param n_attributes Total number of attributes in the dataset
+ * @param squared Whether to return a distance matrix of squared euclidean distances or not
  * @return A pointer to the first position of the distance matrix, which has size n_objects x n_objects.
  */
-float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
+float *get_distance_matrix(float *dataset, int n_objects, int n_attributes, bool squared) {
     float *matrix = (float*)malloc(sizeof(float) * n_objects * n_objects);
 
     for(int i = 0; i < n_objects; i++) {
@@ -38,7 +40,8 @@ float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
             float dist = get_euclidean_distance(
                     &dataset[i * n_attributes],
                     &dataset[j * n_attributes],
-                    n_attributes - 1  // minus the class attribute
+                    n_attributes,
+                    squared
             );
             matrix[i * n_objects + j] = dist;
             matrix[j * n_objects + i] = dist;
@@ -54,7 +57,7 @@ float *get_distance_matrix(float *dataset, int n_objects, int n_attributes) {
  * @param dm A pointer to the first position in the distance matrix
  * @param dataset A pointer to the first position of the dataset
  * @param n_objects Number of objects in the dataset
- * @param n_attributes Total number of attributes (including class/group) in the dataset
+ * @param n_attributes Total number of attributes in the dataset
  * @return A pointer to the first position of the partition array, which has size n_objects
  */
 int *get_partition(int *medoids, float *dm, float *dataset, int n_objects, int n_attributes) {

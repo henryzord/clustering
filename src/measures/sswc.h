@@ -38,7 +38,8 @@ float sswc(int *medoids, float *dataset, int n_objects, int n_attributes) {
                 dist = get_euclidean_distance(
                         &dataset[i * n_attributes],
                         &dataset[j * n_attributes],
-                        n_attributes - 1
+                        n_attributes,
+                        false
                 );
                 if(dist < a) {
                     b = a;
