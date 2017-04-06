@@ -47,21 +47,15 @@ int main(int argc, char **argv) {
     int n_objects, n_attributes;
 
     float *dataset = read_dataset("../datasets/iris.csv", &n_objects, &n_attributes);
-
-
     float *dm = get_distance_matrix(dataset, n_objects, n_attributes, true);
-    float *mst = prim_dat(dataset, n_objects, n_attributes);
 
     srand((unsigned int)time(NULL));  // seeds whatever value it has currently
     int *partition = randint(n_objects, 0, 2);
 
-    float *apts = a_pts_coredist(partition, dm, n_objects, n_attributes);
+    float index = dbcv(partition, dm, n_objects, n_attributes);
 
-//    print_matrix(mst, n_objects, MST_FIELDS, true);
     free(dataset);
-    free(mst);
     free(dm);
-    free(apts);
 
     return 0;
 }
