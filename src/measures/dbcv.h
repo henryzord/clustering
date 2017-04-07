@@ -193,31 +193,30 @@ float *prim_mat(float *dm, int n_objects) {
     return mst;
 }
 
-int *get_labels(int *partition, int n_objects, int *n_groups) {
-    int *visited = (int*)malloc(sizeof(int) * n_objects), *unique = NULL;
+int *get_labels(int *partition, int n_objects, int *n_groups, int *group_size) {
+    int *unique = NULL;
 
     *n_groups = 0;
 
     for(int n = 0; n < n_objects; n++) {
-        visited[n] = 0;
+        group_size[n] = 0;
     }
 
     for(int n = 0; n < n_objects; n++) {
-        if(visited[partition[n]] == 0) {
+        if(group_size[partition[n]] == 0) {
             *n_groups += 1;
         }
-        visited[partition[n]] += 1;
+        group_size[partition[n]] += 1;
     }
 
     unique = (int*)malloc(sizeof(int) * *n_groups);
     int counter = 0;
     for(int n = 0; n < n_objects; n++) {
-        if(visited[n] > 0) {
+        if(group_size[n] > 0) {
             unique[counter] = n;
             counter += 1;
         }
     }
-    free(visited);
     return unique;
 }
 
@@ -231,9 +230,7 @@ int get_group_size(int *partition, int n_objects, int cluster) {
     return group_size;
 }
 
-float *prim_cls(float *dm, int *partition, int n_objects) {
-    int n_groups, *labels = get_labels(partition, n_objects, &n_groups);
-
+float *prim_cls(float *dm, int *partition, int n_objects, int *labels, int n_groups) {
     // closest neighbor index, closest neighbor distance, and degree of the object
     float *mst = (float*)malloc(sizeof(float) * (n_objects * MST_FIELDS));
     for(int n = 0; n < n_objects; n++) {
@@ -282,21 +279,66 @@ float *prim_cls(float *dm, int *partition, int n_objects) {
         }
 
     }
-    free(labels);
     return mst;
 }
+
+float *validity_of_cluster(float *mreach_mst, float *mreach_matrix, int *partition, int n_objects, int *labels, int n_groups) {
+    float *vc = (float*)malloc(sizeof(float) * n_groups);
+
+    for(int c = 0; c < n_groups; c++) {
+        float dsc = -INFINITY;
+        float dspc = INFINITY;
+
+        for(int i = 0; i < n_objects; i++) {
+            if((mreach_mst[i * MST_FIELDS + SELF_DEGREE] <= 1) || (partition[i] != labels[c])) {
+                continue;
+            }
+
+            for(int j = 0; j < i; j++) {
+                if(mreach_mst[j * MST_FIELDS + SELF_DEGREE] <= 1) {
+                    continue;
+                }
+
+                if(partition[i] != partition[j]) {
+                    if(mreach_matrix[i * n_objects + j] < dspc) {  // minimum distance between two clusters
+                        dspc = mreach_matrix[i * n_objects + j];
+                    }
+                } else if( // maximum distance between two same-cluster objects
+                        (mreach_mst[i * MST_FIELDS + NEIGHBOR_INDEX] == j) &&
+                        (mreach_matrix[i * MST_FIELDS + NEIGHBOR_DISTANCE] > dsc)) {
+                    dsc = mreach_matrix[i * MST_FIELDS + NEIGHBOR_DISTANCE];
+                }
+            }
+        }
+        vc[c] = (dspc - dsc) / fmaxf(dspc, dsc);
+    }
+    return vc;
+}
+
 
 float dbcv(int *partition, float *dm, int n_objects, int n_attributes) {
     float *apts = a_pts_coredist(partition, dm, n_objects, n_attributes);
     float *mreach_matrix = mreach_mat(apts, dm, n_objects);
-    float *mreach_mst = prim_cls(mreach_matrix, partition, n_objects);
 
+    int *group_size = (int*)malloc(sizeof(int) * n_objects);
+    int n_groups, *labels = get_labels(partition, n_objects, &n_groups, group_size);
+    float *mreach_mst = prim_cls(mreach_matrix, partition, n_objects, labels, n_groups);
+    float *vc = validity_of_cluster(mreach_mst, mreach_matrix, partition, n_objects, labels, n_groups);
+
+
+    float dbcv_index = 0;
+    for(int c = 0; c < n_groups; c++) {
+        dbcv_index += (group_size[labels[c]] / (float)n_objects) * vc[c];
+    }
+
+    free(group_size);
     free(mreach_matrix);
     free(mreach_mst);
+    free(labels);
     free(apts);
+    free(vc);
 
-
-    return -1;  // TODO change!
+    return dbcv_index;
 }
 
 #endif //CLUSTERING_DBCV_H

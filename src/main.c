@@ -52,7 +52,8 @@ int main(int argc, char **argv) {
     srand((unsigned int)time(NULL));  // seeds whatever value it has currently
     int *partition = randint(n_objects, 0, 2);
 
-    float index = dbcv(partition, dm, n_objects, n_attributes);
+    float dbcv_index = dbcv(partition, dm, n_objects, n_attributes);
+    printf("dbcv: %f\n", dbcv_index);
 
     free(dataset);
     free(dm);
