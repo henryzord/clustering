@@ -30,18 +30,20 @@ float *a_pts_coredist(int *partition, float *dm, int n_objects, int n_attributes
     float *apts = (float*)malloc(sizeof(float) * n_objects);
 
     for(int i = 0; i < n_objects; i++) {
-        int cluster_size = 1;
-        float sum_term = 0;
-        float dist;
+        int cluster_size = 0;
+        float _sum = 0;
         for(int j = 0; j < n_objects; j++) {
-            if((partition[i] == partition[j]) && (i != j)) {
-                dist = dm[i * n_objects + j];
-                sum_term += powf(1 / dist, (float)n_attributes);
+            if(partition[i] == partition[j]) {
+                float dist = dm[i * n_objects + j];
+                if(dist > 0) {
+                    _sum += powf(1 / dist, (float)n_attributes);
+                }
                 cluster_size += 1;
             }
         }
+        _sum /= (float)(cluster_size - 1);
 
-        apts[i] = 1 / powf(sum_term / (cluster_size - 1), (float)1/n_attributes);
+        apts[i] = powf(_sum, -1/(float)n_attributes);
     }
 
     return apts;

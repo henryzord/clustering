@@ -6,14 +6,14 @@
 #include <string.h>
 #include <stdbool.h>
 
-void print_array_float(float *array, int size) {
+void print_float_array(float *array, int size) {
     for(int n = 0; n < size; n++) {
         printf("%f\t", array[n]);
     }
     printf("\n");
 }
 
-void print_array_int(int *array, int size) {
+void print_int_array(int *array, int size) {
     for(int n = 0; n < size; n++) {
         printf("%d\t", array[n]);
     }

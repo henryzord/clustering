@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.sparse import coo_matrix
+import pandas as pd
 
 
 def prim_mst(objects, weight_matrix, shape):
@@ -47,3 +48,56 @@ def prim_mst(objects, weight_matrix, shape):
     coo = coo_matrix((vec[:, -1], (vec[:, 0], vec[:, 1])), shape=shape)
 
     return coo, degree
+
+
+def coredist(dm, partition, n_attributes):
+    """
+    
+    
+    :type dm: numpy.ndarray
+    :param dm: Powered euclidean distance matrix
+    :type partition: numpy.ndarray
+    :param partition: Cluster assignment for each and every object
+    :type n_attributes: int
+    :param n_attributes: Number of attributes in the dataset
+    :return: The core distance for each and every object
+    """
+
+    n_objects, _ = dm.shape
+
+    data_coredist = np.empty(n_objects, dtype=np.float32)
+
+    for i in xrange(n_objects):
+        index_neighbours = np.setdiff1d(np.flatnonzero(partition == partition[i]), [i])
+        n_neighbours = index_neighbours.shape[0]
+        dist_neighbors = dm[i, index_neighbours]
+
+        _sum = 0.
+        for j, dist_neighbor in enumerate(dist_neighbors):
+            if dist_neighbor > 0:
+                _sum += (1. / dist_neighbor) ** float(n_attributes)
+
+        _sum /= n_neighbours
+        _sum **= -(1./n_attributes)
+
+        data_coredist[i] = _sum
+
+    return data_coredist
+
+
+def main():
+    dataset_path = '../../datasets/iris.csv'
+    dataset = pd.read_csv(dataset_path, names=['sepal_width', 'sepal_height', 'petal_width', 'petal_height'], header=None)
+    partition = np.zeros(dataset.shape[0], dtype=np.int)
+    partition[:dataset.shape[0]/2] = 1
+
+    from scipy.spatial.distance import cdist
+    dm = cdist(dataset, dataset, metric='euclidean')
+    dm **= 2.
+
+    _coredist = coredist(dm, partition, dataset.shape[1])
+    print _coredist
+
+
+if __name__ == '__main__':
+    main()

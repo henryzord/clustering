@@ -40,11 +40,6 @@ def sswc(medoids, dataset):
 
     b = np.array(map(lambda i: m_dist[i, np.argmin(m_dist[i])], xrange(n_objects)), np.float32)  # distance to second closest object
 
-    # TODO remove me!
-    import itertools as it
-    for x, y in it.izip(a, b):
-        print 'a: %f b: %f' % (x, y)
-
     index = np.sum((b - a) / np.maximum(b, a)) / float(n_objects)
 
     return np.float32(index)
