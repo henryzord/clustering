@@ -66,6 +66,9 @@ class Handler(object):
 
         dspc = self.__dspc__(degrees, self._data_mreach)
 
+        print 'dsc:', dsc
+        print 'dspc:', dspc
+
         index = np.sum(
             map(lambda k:
                 (counter[k] / float(self._n_objects)) * ((dspc[k] - dsc[k]) / max(dspc[k], dsc[k])),

@@ -16,7 +16,7 @@ def main():
     dataset_path = '../../../datasets/iris.csv'
     dataset = pd.read_csv(dataset_path, names=['sepal_width', 'sepal_height', 'petal_width', 'petal_height'], header=None)
     partition = np.zeros(dataset.shape[0], dtype=np.int)
-    partition[:dataset.shape[0]/2] = 1
+    partition[:2] = 1
 
     handler = AvailableHandler(dataset)
     print 'dbcv:', handler.get_dbcv(partition)

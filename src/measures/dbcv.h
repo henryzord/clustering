@@ -292,32 +292,41 @@ float *validity_of_cluster(float *mreach_mst, float *mreach_matrix, int *partiti
         float dspc = INFINITY;
 
         int min_degree = 2;
-        while(dsc == -INFINITY && dspc == INFINITY && min_degree > 0) {
-            for(int i = 0; i < n_objects; i++) {  // outer object
-                // object is not an inner node, or its group is not the currently analysed group
-                if((mreach_mst[i * MST_FIELDS + SELF_DEGREE] < min_degree) || (partition[i] != labels[c])) {
+//        while(dsc == -INFINITY && dspc == INFINITY && min_degree > 0) {
+        for(int i = 0; i < n_objects; i++) {  // outer object
+            // object is not an inner node, or its group is not the currently analysed group
+            if((mreach_mst[i * MST_FIELDS + SELF_DEGREE] < min_degree) || (partition[i] != labels[c])) {
+                continue;
+            }
+
+            for(int j = 0; j < n_objects; j++) {  // inner object
+                if(mreach_mst[j * MST_FIELDS + SELF_DEGREE] < min_degree) {
                     continue;
                 }
 
-                for(int j = 0; j < n_objects; j++) {  // inner object
-                    if(mreach_mst[j * MST_FIELDS + SELF_DEGREE] < min_degree) {
-                        continue;
+                if(partition[i] != partition[j]) {
+                    if(mreach_matrix[i * n_objects + j] < dspc) {  // minimum distance between two clusters
+                        dspc = mreach_matrix[i * n_objects + j];
                     }
-
-                    if(partition[i] != partition[j]) {
-                        if(mreach_matrix[i * n_objects + j] < dspc) {  // minimum distance between two clusters
-                            dspc = mreach_matrix[i * n_objects + j];
-                        }
-                    } else if( // maximum distance between two same-cluster objects
-                            (mreach_mst[i * MST_FIELDS + NEIGHBOR_INDEX] == j) &&
-                            (mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE] > dsc)) {
-                        dsc = mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE];
-                    }
+                } else if( // maximum distance between two same-cluster objects
+                        (mreach_mst[i * MST_FIELDS + NEIGHBOR_INDEX] == j) &&
+                        (mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE] > dsc)) {
+                    dsc = mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE];
                 }
             }
-            min_degree -= 1;
         }
-        vc[c] = (dspc - dsc) / fmaxf(dspc, dsc);
+//            min_degree -= 1;
+//        }
+        printf("group %d dsc %f dspc: %f\n", c, dsc, dspc);
+
+        if(dspc == INFINITY) {
+            dspc = 0;
+        }
+        if(dsc == -INFINITY) {
+            vc[c] = 0;
+        } else {
+            vc[c] = (dspc - dsc) / fmaxf(dspc, dsc);
+        }
     }
     return vc;
 }

@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
     int *partition = randint(n_objects, 0, 1);
     for(int i = 0; i < n_objects; i++) {
-        if(i < (n_objects / 2)) {
+        if(i < (2)) {
             partition[i] = 1;
         } else {
             partition[i] = 0;
