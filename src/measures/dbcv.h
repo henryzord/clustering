@@ -291,26 +291,31 @@ float *validity_of_cluster(float *mreach_mst, float *mreach_matrix, int *partiti
         float dsc = -INFINITY;
         float dspc = INFINITY;
 
-        for(int i = 0; i < n_objects; i++) {
-            if((mreach_mst[i * MST_FIELDS + SELF_DEGREE] <= 1) || (partition[i] != labels[c])) {
-                continue;
-            }
-
-            for(int j = 0; j < i; j++) {
-                if(mreach_mst[j * MST_FIELDS + SELF_DEGREE] <= 1) {
+        int min_degree = 2;
+        while(dsc == -INFINITY && dspc == INFINITY && min_degree > 0) {
+            for(int i = 0; i < n_objects; i++) {  // outer object
+                // object is not an inner node, or its group is not the currently analysed group
+                if((mreach_mst[i * MST_FIELDS + SELF_DEGREE] < min_degree) || (partition[i] != labels[c])) {
                     continue;
                 }
 
-                if(partition[i] != partition[j]) {
-                    if(mreach_matrix[i * n_objects + j] < dspc) {  // minimum distance between two clusters
-                        dspc = mreach_matrix[i * n_objects + j];
+                for(int j = 0; j < n_objects; j++) {  // inner object
+                    if(mreach_mst[j * MST_FIELDS + SELF_DEGREE] < min_degree) {
+                        continue;
                     }
-                } else if( // maximum distance between two same-cluster objects
-                        (mreach_mst[i * MST_FIELDS + NEIGHBOR_INDEX] == j) &&
-                        (mreach_matrix[i * MST_FIELDS + NEIGHBOR_DISTANCE] > dsc)) {
-                    dsc = mreach_matrix[i * MST_FIELDS + NEIGHBOR_DISTANCE];
+
+                    if(partition[i] != partition[j]) {
+                        if(mreach_matrix[i * n_objects + j] < dspc) {  // minimum distance between two clusters
+                            dspc = mreach_matrix[i * n_objects + j];
+                        }
+                    } else if( // maximum distance between two same-cluster objects
+                            (mreach_mst[i * MST_FIELDS + NEIGHBOR_INDEX] == j) &&
+                            (mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE] > dsc)) {
+                        dsc = mreach_mst[i * MST_FIELDS + NEIGHBOR_DISTANCE];
+                    }
                 }
             }
+            min_degree -= 1;
         }
         vc[c] = (dspc - dsc) / fmaxf(dspc, dsc);
     }
@@ -324,9 +329,10 @@ float dbcv(int *partition, float *dm, int n_objects, int n_attributes) {
 
     int *group_size = (int*)malloc(sizeof(int) * n_objects);
     int n_groups, *labels = get_labels(partition, n_objects, &n_groups, group_size);
-    float *mreach_mst = prim_cls(mreach_matrix, partition, n_objects, labels, n_groups);
-    float *vc = validity_of_cluster(mreach_mst, mreach_matrix, partition, n_objects, labels, n_groups);
 
+    float *mreach_mst = prim_cls(mreach_matrix, partition, n_objects, labels, n_groups);
+
+    float *vc = validity_of_cluster(mreach_mst, mreach_matrix, partition, n_objects, labels, n_groups);
 
     float dbcv_index = 0;
     for(int c = 0; c < n_groups; c++) {

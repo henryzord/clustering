@@ -20,7 +20,7 @@ void print_int_array(int *array, int size) {
     printf("\n");
 }
 
-void print_matrix(float *matrix, int n_lines, int n_columns, bool show_index) {
+void print_float_matrix(float *matrix, int n_lines, int n_columns, bool show_index) {
     int n = 0, line_c = 0;
 
     while(n < n_lines * n_columns) {
